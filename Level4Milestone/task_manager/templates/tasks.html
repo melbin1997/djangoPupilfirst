@@ -1,0 +1,16 @@
+<h1>Tasks Management Application</h1>
+
+
+
+<form action="{% url 'add-task' %}" method="get">
+    <input type="text" name="task"/>
+    <button type="submit">Add Task</button>
+</form>
+
+<h1>Tasks</h1>
+{% for task in tasks %}
+{{forloop.counter}}. {{task}} <a href="{% url 'delete-task' index=forloop.counter %}">Delete Task</a> <a href="{% url 'complete-task' index=forloop.counter %}">Complete Task</a><br/>
+{% endfor %}
+
+<a href="{% url 'complete-list' %}">Completed Tasks</a>
+<a href="{% url 'all-tasks-view' %}">All Tasks</a>
