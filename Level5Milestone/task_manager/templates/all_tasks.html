@@ -1,0 +1,15 @@
+<h1>Tasks Management Application</h1>
+
+<a href="{% url 'tasks-view' %}">Go to Tasks Application</a>
+
+<h1>Pending Tasks</h1>
+{% for task in tasks %}
+{{forloop.counter}}. {{task}} <a href="{% url 'delete-task' index=task.id %}">Delete Task</a> <a href="{% url 'complete-task' index=task.id %}">Complete Task</a><br/>
+{% endfor %}
+
+<h1>Completed Tasks</h1>
+{% for task in completed_tasks %}
+{{forloop.counter}}. {{task}} <br/>
+{% endfor %}
+
+<a href="{% url 'complete-list' %}">View Completed Tasks only</a>
