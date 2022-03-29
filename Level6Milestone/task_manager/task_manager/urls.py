@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
-from django.urls import path
+from django.urls import include, path
 from django.views.generic import RedirectView
 from tasks.views import (CreateTaskView, GenericAllTaskView,
                          GenericTaskCompleteListView, GenericTaskCreateView,
@@ -41,5 +41,6 @@ urlpatterns = [
     path('user/login', UserLoginView.as_view(), name='user-login'),
     path('user/logout', LogoutView.as_view(), name = "user-logout"),
     path('sessiontest', session_storage_view),
-    path('', RedirectView.as_view(url='tasks/'))
+    path('', RedirectView.as_view(url='tasks/')),
+    path("__reload__/", include("django_browser_reload.urls"))
 ]

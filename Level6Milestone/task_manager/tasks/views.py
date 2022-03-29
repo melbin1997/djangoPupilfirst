@@ -150,22 +150,31 @@ def all_tasks_view(request):
 
 class GenericAllTaskView(LoginRequiredMixin, ListView):
     model = Task
-    context_object_name = 'tasks'   
+    context_object_name = 'all_tasks'   
     template_name = 'all_tasks.html'
+    paginate_by = 5
+
+    def get_queryset(self):
+        all_tasks = Task.objects.filter(deleted = False, user = self.request.user).order_by('completed','priority')
+        return all_tasks
 
     def get_context_data(self, **kwargs):
         context = super(GenericAllTaskView, self).get_context_data(**kwargs)
         context['tasks'] = Task.objects.filter(deleted = False, completed = False, user = self.request.user).order_by('priority')
         context['completed_tasks'] = Task.objects.filter(completed = True, user = self.request.user).order_by('priority')
+        all_tasks = Task.objects.filter(deleted = False, user = self.request.user).order_by('completed','priority')
+        context['completed_count'] = all_tasks.filter(completed=True).count()
+        context['all_count'] = all_tasks.count()
         return context
 
 
 class GenericTaskCompleteListView(LoginRequiredMixin ,ListView):
     template_name = "completed_tasks.html"
     context_object_name = "tasks"
+    paginate_by = 5
 
     def get_queryset(self):
-        completed_tasks = Task.objects.filter(completed = True, user=self.request.user).order_by('priority')
+        completed_tasks = Task.objects.filter(completed = True, deleted = False, user=self.request.user).order_by('priority')
         return completed_tasks
 
 # Alternative class of GenericTaskCompleteUpdateView

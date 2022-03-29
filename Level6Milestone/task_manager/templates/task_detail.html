@@ -1,11 +1,29 @@
-<h2>Title</h2>
-{{object.title}}
-<h2>Description</h2>
-{{object.description}}
-<h2>Created At</h2>
-{{object.created_date}}
-<h2>Priority</h2>
-{{object.priority}}
+{% extends "base.html" %}
 
-<br/>
-<a href="{% url 'tasks-view'%}">Go to Tasks Application</a>
+{% block content %}
+<div class="flex h-screen">
+
+    <div class="mx-auto w-96 prose">
+    <h1 class="my-10">Todo</h1>
+
+<h3>Title</h3>
+<input class="rounded-lg bg-gray-200 border-0 w-full" type="text" value="{{ object.title }}" disabled/> 
+<h3>Description</h3>
+<textarea class="rounded-lg bg-gray-200 border-0 w-full" name="description" cols="40" rows="10" disabled>{{ object.description }}</textarea>
+
+<h3>Priority</h3>
+<input class="rounded-lg bg-gray-200 border-0 w-full" type="number" value="{{ object.priority }}" disabled/><br/>
+
+<input class="bg-gray-200 border-0" type="checkbox" {% if object.completed %} checked {% endif %} disabled/>
+Completed
+
+<h3>Created At</h3>
+{{object.created_date}}
+
+<!-- <a href="{% url 'tasks-view'%}">Go to Tasks Application</a> -->
+
+</div>
+
+</div>
+{% endblock %}
+ 
