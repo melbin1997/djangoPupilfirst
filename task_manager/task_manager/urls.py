@@ -23,7 +23,7 @@ from rest_framework_nested import routers
 from tasks.apiviews import TaskListAPI, TaskStatusHistoryViewSet, TaskViewSet
 from tasks.tasks import test_background_job
 from tasks.views import (CreateTaskView, GenericAllTaskView,
-                         GenericReportCreateView, GenericReportUpdateView,
+                         GenericReportUpdateView,
                          GenericTaskCompleteListView,
                          GenericTaskCompleteUpdateView,
                          GenericTaskCompleteView, GenericTaskCreateView,

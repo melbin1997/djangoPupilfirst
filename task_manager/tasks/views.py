@@ -242,27 +242,6 @@ class GenericTaskCompleteUpdateView(AuthorizedTaskManager, UpdateView):
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
-from django.views.generic.detail import SingleObjectTemplateResponseMixin
-from django.views.generic.edit import ModelFormMixin, ProcessFormView
-
-class CreateUpdateView(
-    SingleObjectTemplateResponseMixin, ModelFormMixin, ProcessFormView
-):
-
-    def get_object(self, queryset=None):
-        try:
-            return super(CreateUpdateView,self).get_object(queryset)
-        except AttributeError:
-            return None
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super(CreateUpdateView, self).get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super(CreateUpdateView, self).post(request, *args, **kwargs)
-
 class ReportCreateForm(ModelForm):
 
     class Meta:
@@ -273,24 +252,7 @@ class ReportCreateForm(ModelForm):
         }
 
 
-class GenericReportCreateView(LoginRequiredMixin, CreateUpdateView):
-    def get_queryset(self):
-        return ReportConfig.objects.filter(user=self.request.user)
-    model = ReportConfig
-    form_class = ReportCreateForm
-    template_name = "report_create.html"
-    success_url = "/tasks"
-
-    def form_valid(self, form):
-        self.object = form.save()
-        self.object.user = self.request.user
-        self.object.save()
-        return HttpResponseRedirect(self.get_success_url())
-
-
 class GenericReportUpdateView(LoginRequiredMixin, UpdateView):
-    # def get_queryset(self):
-    #     return ReportConfig.objects.filter(user=self.request.user)
     model = ReportConfig
     form_class = ReportCreateForm
     template_name = "report_create.html"

@@ -1,3 +1,4 @@
+import datetime
 from sqlite3 import Timestamp
 import sys
 from django.db import models
@@ -45,7 +46,7 @@ class TaskStatusChange(models.Model):
         return f'Task {self.task.id} : {self.old_status} -> {self.new_status}'
 
 class ReportConfig(models.Model):
-    time = models.TimeField()
+    time = models.TimeField(default=datetime.time(22, 00))
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
 
     def __str__(self):

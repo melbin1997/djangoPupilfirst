@@ -6,6 +6,12 @@
     <div class="mx-auto w-96 prose">
     <h1 class="my-10">Configure report time (in a day)</h1>
 
+    {% if form.instance.pk %}
+    Status : <span class="text-green-500">CONFIGURED</span>
+    {% else %}
+    Status : <span class="text-red-500">NOT CONFIGURED</span>
+    {% endif %}
+
     <form method="post">
         {{form.as_p}}
         {% csrf_token %}
