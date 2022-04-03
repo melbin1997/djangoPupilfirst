@@ -6,7 +6,7 @@
     <div class="mx-auto w-96 prose">
     <h1 class="my-10">Create Todo</h1>
 
-<form action="{% url 'create-task' %}" method="post">
+<form method="post">
     <div class="form-group my-10">
         {{ form.non_field_errors }}
         <div class="input-group my-2">
@@ -28,6 +28,11 @@
             {{ form.completed.errors }}
             <input class="form-control bg-gray-200 border-0" type="checkbox" name="{{ form.completed.html_name }}" id="{{ form.completed.id_for_label }}">
             <label for="{{ form.completed.id_for_label }}">Completed</label>
+        </div>
+        <div class="input-group my-2">
+            {{ form.status.errors }}
+            <label for="{{ form.status.id_for_label }}">Status </label>
+            {{ form.status }}
         </div>
 
     </div>

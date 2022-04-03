@@ -1,3 +1,4 @@
+from sqlite3 import Timestamp
 import sys
 from django.db import models
 
@@ -42,3 +43,19 @@ class TaskStatusChange(models.Model):
 
     def __str__(self):
         return f'Task {self.task.id} : {self.old_status} -> {self.new_status}'
+
+class ReportConfig(models.Model):
+    time = models.TimeField()
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return f'{self.user} : {self.time}'
+
+
+class Notification(models.Model):
+    timestamp = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    content = models.CharField(max_length=1024)
+
+    def __str__(self):
+        return f'{self.user} at {self.timestamp}'

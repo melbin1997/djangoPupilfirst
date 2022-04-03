@@ -30,6 +30,7 @@
                 <label for="{{ form.password2.id_for_label }}">Confirm Password</label><br/>
                 <input class="form-control rounded-lg bg-gray-200 border-0 w-full" id="{{ form.password2.id_for_label }}" name="{{ form.password2.html_name }}" type="password" /> 
             </div>
+
         </div>
         {% csrf_token %}
         <button class="rounded-lg bg-red-500 w-full text-white p-2" type="submit">Sign Up</button>

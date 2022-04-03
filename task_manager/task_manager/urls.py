@@ -15,25 +15,35 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
+from django.http import HttpResponse
 from django.urls import include, path
 from django.views.generic import RedirectView
+from rest_framework.routers import SimpleRouter
+from rest_framework_nested import routers
+from tasks.apiviews import TaskListAPI, TaskStatusHistoryViewSet, TaskViewSet
+from tasks.tasks import test_background_job
 from tasks.views import (CreateTaskView, GenericAllTaskView,
-                         GenericTaskCompleteListView, GenericTaskCreateView,
+                         GenericReportCreateView, GenericReportUpdateView,
+                         GenericTaskCompleteListView,
+                         GenericTaskCompleteUpdateView,
+                         GenericTaskCompleteView, GenericTaskCreateView,
                          GenericTaskDeleteView, GenericTaskDetailView,
                          GenericTaskUpdateView, GenericTaskView, TaskView,
                          UserCreateView, UserLoginView, add_task_view,
                          all_tasks_view, complete_list_view,
                          complete_task_view, delete_task_view,
-                         session_storage_view, GenericTaskCompleteView, GenericTaskCompleteUpdateView)
-from tasks.apiviews import TaskListAPI, TaskViewSet, TaskStatusHistoryViewSet
-from rest_framework.routers import SimpleRouter
-from rest_framework_nested import routers
+                         session_storage_view)
 
 router = SimpleRouter()
 router.register("api/task", TaskViewSet)
 
 task_router = routers.NestedSimpleRouter(router, "api/task", lookup="task")
 task_router.register("history", TaskStatusHistoryViewSet)
+
+def test_bg(request):
+    test_background_job.delay()
+    return HttpResponse("All good")
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -52,5 +62,7 @@ urlpatterns = [
     path('sessiontest', session_storage_view),
     path('', RedirectView.as_view(url='tasks/')),
     path("__reload__/", include("django_browser_reload.urls")),
-    path("taskapi", TaskListAPI.as_view())
+    path("taskapi", TaskListAPI.as_view()),
+    path("test_bg", test_bg),
+    path('create-report', GenericReportUpdateView.as_view(), name='create-report')
 ] + router.urls + task_router.urls
