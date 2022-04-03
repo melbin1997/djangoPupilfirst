@@ -18,8 +18,12 @@
 Completed
 <br/>
 
-<label for="{{ form.status.id_for_label }}">Status </label>
-{{ object.status }}
+
+<h3>Status</h3>
+<select name="status" class="rounded-lg bg-gray-200 border-0 w-full" disabled>
+    <option value="" selected>{{ object.status }}</option>
+  </select>
+
 
 <h3>Created At</h3>
 {{object.created_date}}

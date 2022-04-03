@@ -1,6 +1,6 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.views import LoginView
-from django.forms import ModelForm, ValidationError
+from django.forms import ModelForm, NumberInput, TextInput, Textarea, TimeInput, ValidationError, Select
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
@@ -10,19 +10,51 @@ from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F
 from tasks.models import Task, ReportConfig
+from django.contrib.auth.models import User
 
 class AuthorizedTaskManager(LoginRequiredMixin):
     def get_queryset(self):
         return Task.objects.filter(deleted = False, user=self.request.user)
 
+class MyAuthenticationForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(MyAuthenticationForm, self).__init__(*args, **kwargs)
+
+        self.fields['username'].widget.attrs['class'] = 'rounded-lg bg-gray-200 border-0 w-full'
+        self.fields['password'].widget.attrs['class'] = 'rounded-lg bg-gray-200 border-0 w-full'
+
+        self.label_suffix = ""
+
+    class Meta:
+        model=User
+        fields = ('username', 'password')
 
 class UserLoginView(LoginView):
     template_name = "user_login.html"
+    authentication_form = MyAuthenticationForm
+
+
+class MyUserCreationForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super(MyUserCreationForm, self).__init__(*args, **kwargs)
+
+        self.fields['username'].widget.attrs['class'] = 'rounded-lg bg-gray-200 border-0 w-full'
+        self.fields['password1'].widget.attrs['class'] = 'rounded-lg bg-gray-200 border-0 w-full'
+        self.fields['password2'].widget.attrs['class'] = 'rounded-lg bg-gray-200 border-0 w-full'
+        self.fields['password2'].help_text = None
+        self.fields['password2'].label = "Confirm Password"
+
+        self.label_suffix = ""
+
+    class Meta:
+        model=User
+        fields = ('username', 'password1', 'password2')
 
 class UserCreateView(CreateView):
-    form_class = UserCreationForm
+    form_class = MyUserCreationForm
     template_name = "user_create.html"
     success_url = "/user/login"
+
 
 def session_storage_view(request):
     total_views = request.session.get('total_views', 0)
@@ -52,14 +84,20 @@ class TaskCreateForm(ModelForm):
             raise ValidationError("Data too small")
         return title.upper()
 
-    def is_valid(self):
-        print(super().is_valid())
-        print(self)
-        return super().is_valid()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
 
     class Meta:
         model = Task
-        fields = ("title", "description", "completed", "priority", "status")
+        fields = ("title", "description", "priority", "completed", "status")
+        widgets = {
+            'title' : TextInput(attrs={'class':'rounded-lg bg-gray-200 border-0 w-full'}),
+            'description' : Textarea(attrs={'cols': 40, 'rows': 10, 'class':'rounded-lg bg-gray-200 border-0 w-full'}),
+            'priority' : NumberInput(attrs={'class':'rounded-lg bg-gray-200 border-0 w-full'}),
+            'status' : Select(attrs={'class':'rounded-lg bg-gray-200 border-0 w-full'})
+        }
+        
 
 class GenericTaskUpdateView(AuthorizedTaskManager, UpdateView):
     model = Task
@@ -230,6 +268,9 @@ class ReportCreateForm(ModelForm):
     class Meta:
         model = ReportConfig
         fields = ("time", )
+        widgets = {
+            'time' : TimeInput(attrs={'type':'time', 'class':'rounded-lg bg-gray-200 border-0 w-full'}, format='%H:%M'),
+        }
 
 
 class GenericReportCreateView(LoginRequiredMixin, CreateUpdateView):

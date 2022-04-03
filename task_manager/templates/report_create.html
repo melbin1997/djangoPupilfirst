@@ -7,12 +7,8 @@
     <h1 class="my-10">Configure report time (in a day)</h1>
 
     <form method="post">
+        {{form.as_p}}
         {% csrf_token %}
-        <div class="input-group my-2">
-        {{ form.time.errors }}
-        <label for="{{ form.time.id_for_label }}">Time </label>
-        <input type="time" id="{{ form.time.id_for_label }}"  name="{{ form.time.html_name }}" value="{{ form.time.value|time:'h:i' }}" />
-    </div>
         <input type="submit" value="Submit">
     </form>
 
