@@ -48,6 +48,7 @@ class TaskStatusChange(models.Model):
 class ReportConfig(models.Model):
     time = models.TimeField(default=datetime.time(22, 00))
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    last_sent_time = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.user} : {self.time}'
