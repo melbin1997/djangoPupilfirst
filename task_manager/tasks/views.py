@@ -106,11 +106,16 @@ class GenericTaskUpdateView(AuthorizedTaskManager, UpdateView):
     success_url = "/tasks"
 
     def form_valid(self, form):
+        if 'priority' in form.changed_data and Task.objects.filter(priority=form.cleaned_data['priority'], deleted = False, completed = False, user = self.request.user).exists():
+            i = 0
+            while(True):
+                updatedRowsCount = Task.objects.filter(priority=form.cleaned_data['priority']+i, deleted = False, completed = False, user = self.request.user).count()
+                if updatedRowsCount == 0:
+                    break
+                i += 1
+            Task.objects.filter(priority__gte=form.cleaned_data['priority'], priority__lte=form.cleaned_data['priority']+i ,deleted = False, completed = False, user = self.request.user).update(priority = F('priority')+1)
         self.object = form.save()
         self.object.user = self.request.user
-        if Task.objects.filter(priority=self.object.priority, deleted = False, completed = False, user = self.request.user).exists():
-            Task.objects.filter(priority__gte=self.object.priority, deleted = False, completed = False, user = self.request.user).update(priority = F('priority')+1)
-
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -120,11 +125,16 @@ class GenericTaskCreateView(LoginRequiredMixin, CreateView):
     success_url = "/tasks"
 
     def form_valid(self, form):
+        if Task.objects.filter(priority=form.cleaned_data['priority'], deleted = False, completed = False, user = self.request.user).exists():
+            i = 0
+            while(True):
+                updatedRowsCount = Task.objects.filter(priority=form.cleaned_data['priority']+i, deleted = False, completed = False, user = self.request.user).count()
+                if updatedRowsCount == 0:
+                    break
+                i += 1
+            Task.objects.filter(priority__gte=form.cleaned_data['priority'], priority__lte=form.cleaned_data['priority']+i ,deleted = False, completed = False, user = self.request.user).update(priority = F('priority')+1)
         self.object = form.save()
         self.object.user = self.request.user
-        if Task.objects.filter(priority=self.object.priority, deleted = False, completed = False, user = self.request.user).exists():
-            Task.objects.filter(priority__gte=self.object.priority, deleted = False, completed = False, user = self.request.user).update(priority = F('priority')+1)
-
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
