@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -52,10 +53,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'task_manager.urls'
 
+SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["templates"],
+        'DIRS': [os.path.join(SITE_ROOT,'..', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
