@@ -27,11 +27,11 @@ class Task(models.Model):
         super().__init__(*args, **kwargs)
         self.__old_status = self.status
 
-    def save(self, force_insert = False, force_update = False,  *args, **kwargs):
-        if self.status != self.__old_status:
-            TaskStatusChange(old_status=self.__old_status, new_status=self.status, task=self).save()
-        super().save(force_insert, force_update, *args, **kwargs)
-        self.__old_status = self.status
+    # def save(self, force_insert = False, force_update = False,  *args, **kwargs):
+    #     if self.status != self.__old_status:
+    #         TaskStatusChange(old_status=self.__old_status, new_status=self.status, task=self).save()
+    #     super().save(force_insert, force_update, *args, **kwargs)
+    #     self.__old_status = self.status
 
     def __str__(self):
         return self.title
