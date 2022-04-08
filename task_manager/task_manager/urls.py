@@ -35,10 +35,10 @@ from tasks.views import (CreateTaskView, GenericAllTaskView,
                          session_storage_view)
 
 router = SimpleRouter()
-router.register("api/task", TaskViewSet)
+router.register("api/task", TaskViewSet, 'api-task')
 
 task_router = routers.NestedSimpleRouter(router, "api/task", lookup="task")
-task_router.register("history", TaskStatusHistoryViewSet)
+task_router.register("history", TaskStatusHistoryViewSet, 'api-task-status-history')
 
 def test_bg(request):
     test_background_job.delay()

@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from tasks.models import STATUS_CHOICES, ReportConfig, Task
 
-from .views import TaskCreateForm, session_storage_view
+from tasks.views import TaskCreateForm, session_storage_view
 
 
 class GenericTaskViewTest(TestCase):
