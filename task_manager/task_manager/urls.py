@@ -21,7 +21,6 @@ from django.views.generic import RedirectView
 from rest_framework.routers import SimpleRouter
 from rest_framework_nested import routers
 from tasks.apiviews import TaskListAPI, TaskStatusHistoryViewSet, TaskViewSet
-from tasks.tasks import test_background_job
 from tasks.views import (CreateTaskView, GenericAllTaskView,
                          GenericReportUpdateView,
                          GenericTaskCompleteListView,
@@ -39,11 +38,6 @@ router.register("api/task", TaskViewSet, 'api-task')
 
 task_router = routers.NestedSimpleRouter(router, "api/task", lookup="task")
 task_router.register("history", TaskStatusHistoryViewSet, 'api-task-status-history')
-
-def test_bg(request):
-    test_background_job.delay()
-    return HttpResponse("All good")
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -63,6 +57,5 @@ urlpatterns = [
     path('', RedirectView.as_view(url='tasks/')),
     path("__reload__/", include("django_browser_reload.urls")),
     path("taskapi", TaskListAPI.as_view()),
-    path("test_bg", test_bg),
     path('create-report', GenericReportUpdateView.as_view(), name='create-report')
 ] + router.urls + task_router.urls

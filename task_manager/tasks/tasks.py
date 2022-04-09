@@ -21,17 +21,10 @@ def send_email_reminder():
         send_mail("Pending Tasks from Task Manager", email_content, "tasks@taskmanager.com", [user.email])
         print(f'Completed email processing for user : {user.id}')
 
-
-@app.task
-def test_background_job():
-    for i in range(10):
-        time.sleep(1)
-        print(i)
-
-
 @periodic_task(run_every=timedelta(seconds=1))
 def send_task_summary():
     currentTime = timezone.now()
+    mail_sent_to = []
 
     for email_config in ReportConfig.objects.select_for_update().all():
         with transaction.atomic():
@@ -41,7 +34,9 @@ def send_task_summary():
                 for task_summary in qs:
                     email_content += f"{task_summary.get('status')} : {task_summary.get('total')}\n"
                 send_mail("Task Summary", email_content, "tasks@taskmanager.com", [email_config.user.email])
+                mail_sent_to.append(email_config.user.email)
                 Notification(user=email_config.user, content = email_content).save()
                 email_config.last_sent_time = currentTime
                 email_config.save(update_fields=['last_sent_time'])
                 print(f'Completed task summary email for user : {email_config.user.username} for today with content : {email_content}')
+    return mail_sent_to
