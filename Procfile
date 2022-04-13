@@ -1,1 +1,1 @@
-web: gunicorn task_manager.task_manager.wsgi
+web: gunicorn --chdir ./task_manager task_manager.wsgi
